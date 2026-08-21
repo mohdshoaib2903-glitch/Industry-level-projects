@@ -1,7 +1,7 @@
 import os
 import sys
 
-import numpy as np 
+import numpy as np
 import pandas as pd
 import dill
 import pickle
@@ -21,7 +21,7 @@ def save_object(file_path, obj):
 
     except Exception as e:
         raise CustomException(e, sys)
-    
+
 def evaluate_models(X_train, y_train,X_test,y_test,models,param):
     try:
         report = {}
@@ -52,15 +52,22 @@ def evaluate_models(X_train, y_train,X_test,y_test,models,param):
 
     except Exception as e:
         raise CustomException(e, sys)
-    
-def evaluate_model(X_train, y_train, X_test, y_test, models):
+
+def evaluate_model(X_train, y_train, X_test, y_test, models, param=None):
     try:
         report = {}
         for i in range(len(list(models))):
             model_name = list(models.keys())[i]
             model = list(models.values())[i]
 
-            model.fit(X_train, y_train)
+            try:
+                if param is not None and model_name in param and param[model_name]:
+                    gs = GridSearchCV(model, param[model_name], cv=3, error_score='raise')
+                    gs.fit(X_train, y_train)
+                    model.set_params(**gs.best_params_)
+                model.fit(X_train, y_train)
+            except Exception:
+                model.fit(X_train, y_train)
 
             y_train_pred = model.predict(X_train)
             y_test_pred = model.predict(X_test)

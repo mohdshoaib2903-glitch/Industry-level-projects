@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Exam Performance Predictor</title>
+    <style>
+        :root {
+            --ink: #232323;
+            --muted: #6b6b6b;
+            --line: #d9d6cf;
+            --paper: #fbfaf7;
+            --card: #ffffff;
+            --accent: #3a6b4c;
+            --accent-soft: #eef3ee;
+        }
+        * { box-sizing: border-box; }
+        html { -webkit-text-size-adjust: 100%; }
+        body {
+            margin: 0;
+            background:
+                linear-gradient(180deg, #f4f2ec 0%, var(--paper) 140px) fixed;
+            color: var(--ink);
+            font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+            line-height: 1.6;
+        }
+        .wrap {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 52px 20px 80px;
+        }
+        header { border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 22px; }
+        .kicker {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin: 0 0 8px;
+        }
+        header h1 {
+            font-size: 1.9rem;
+            margin: 0 0 6px;
+            letter-spacing: -0.01em;
+        }
+        header p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 1rem;
+        }
+        .note {
+            border-left: 3px solid var(--accent);
+            background: var(--accent-soft);
+            padding: 12px 16px;
+            margin: 0 0 32px;
+            color: #4a4a4a;
+            font-size: 0.94rem;
+            border-radius: 0 4px 4px 0;
+        }
+        form {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 30px 28px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .field { margin-bottom: 20px; }
+        label {
+            display: block;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #4a4a4a;
+            margin-bottom: 7px;
+        }
+        select, input[type="number"] {
+            width: 100%;
+            padding: 11px 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            color: var(--ink);
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            transition: border-color .15s, box-shadow .15s;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(58,107,76,0.12);
+        }
+        .row { display: flex; gap: 18px; }
+        .row .field { flex: 1; }
+        button {
+            margin-top: 4px;
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-weight: 600;
+            color: #fff;
+            background: var(--accent);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background .15s, transform .05s;
+        }
+        button:hover { background: #315a40; }
+        button:active { transform: translateY(1px); }
+        .result {
+            margin-top: 28px;
+            padding: 22px 24px;
+            background: var(--accent-soft);
+            border: 1px solid #cfe0d4;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .result .label {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #5a6b5f;
+            margin-bottom: 4px;
+        }
+        .result .big {
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+        }
+        footer {
+            margin-top: 44px;
+            font-size: 0.8rem;
+            color: var(--muted);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            text-align: center;
+        }
+        @media (max-width: 560px) {
+            .row { flex-direction: column; gap: 0; }
+            .wrap { padding: 36px 16px 64px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <header>
+            <h1>Student Exam Performance Predictor</h1>
+            <p>A small machine learning model that tries to guess a student's math score.</p>
+        </header>
+
+        <div class="note">
+            Fill in the details below. The model was trained on a few hundred student
+            records, so treat the result as a rough estimate, not a certainty.
+        </div>
+
+        <form action="/predict" method="post">
+            <div class="row">
+                <div class="field">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="" selected disabled>Choose…</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="ethnicity">Race / Ethnicity</label>
+                    <select id="ethnicity" name="ethnicity" required>
+                        <option value="" selected disabled>Choose…</option>
+                        <option value="group A">Group A</option>
+                        <option value="group B">Group B</option>
+                        <option value="group C">Group C</option>
+                        <option value="group D">Group D</option>
+                        <option value="group E">Group E</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label for="parental_level_of_education">Parent Education</label>
+                    <select id="parental_level_of_education" name="parental_level_of_education" required>
+                        <option value="" selected disabled>Choose…</option>
+                        <option value="associate's degree">associate's degree</option>
+                        <option value="bachelor's degree">bachelor's degree</option>
+                        <option value="high school">high school</option>
+                        <option value="master's degree">master's degree</option>
+                        <option value="some college">some college</option>
+                        <option value="some high school">some high school</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="lunch">Lunch</label>
+                    <select id="lunch" name="lunch" required>
+                        <option value="" selected disabled>Choose…</option>
+                        <option value="free/reduced">free / reduced</option>
+                        <option value="standard">standard</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="test_preparation_course">Test Preparation Course</label>
+                <select id="test_preparation_course" name="test_preparation_course" required>
+                    <option value="" selected disabled>Choose…</option>
+                    <option value="none">none</option>
+                    <option value="completed">completed</option>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="field">
+                    <label for="writing_score">Writing Score (0–100)</label>
+                    <input type="number" id="writing_score" name="writing_score" min="0" max="100" placeholder="e.g. 70" required>
+                </div>
+                <div class="field">
+                    <label for="reading_score">Reading Score (0–100)</label>
+                    <input type="number" id="reading_score" name="reading_score" min="0" max="100" placeholder="e.g. 68" required>
+                </div>
+            </div>
+
+            <button type="submit">Predict the maths score</button>
+        </form>
+
+        {% if results is not none %}
+        <div class="result">
+            <div class="label">Predicted maths score</div>
+            <div class="big">{{ results }}</div>
+        </div>
+        {% endif %}
+
+        <footer>
+            Not affiliated with any school or exam board.
+        </footer>
+    </div>
+</body>
+</html>
